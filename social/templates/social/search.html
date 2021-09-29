@@ -1,0 +1,70 @@
+{% extends 'landing/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-md-3 col-sm-6">
+            <a href="{% url 'post-list' %}" class="btn btn-light">Back to Feed</a>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+            <div class="col-md-5 col-sm-12">
+                <h3 class="display-6">Search Results</h3>
+            </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+            <div class="col-md-5 col-sm-12">
+                <p3>Your Connections</p3>
+            </div>
+    </div>
+    {% for follower in followers %}
+    {% for profile in profile_list %}
+    {% if profile.user.first_name == follower.profile.user.first_name %}
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-5 col-sm-12 border-bottom position-relative">
+            <div class="position-relative">
+                <div>
+                    <a href="{% url 'profile' follower.profile.pk %}">
+                        <img class="rounded-circle post-img" height="30" width="30" src="{{ follower.profile.picture.url }}"/>
+                    </a>
+                    <p class="post-text">
+                        <a class="text-primary post-link" href="{% url 'profile' follower.profile.pk %}">@{{ follower.profile.user.first_name }}</a>
+                    </p>
+                </div>
+                {% if follower.profile.location %}
+                <p>{{ follower.profile.location }}</p>
+                {% endif %}
+                <p>Followers: {{ follower.profile.followers.all.count }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+    <div class="row justify-content-center mt-3">
+            <div class="col-md-5 col-sm-12">
+                <h3>All people</h3>
+            </div>
+    </div>
+    {% for profile in profile_list %}
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-5 col-sm-12 border-bottom position-relative">
+            <div class="position-relative">
+                <div>
+                    <a href="{% url 'profile' profile.pk %}">
+                        <img class="rounded-circle post-img" height="30" width="30" src="{{ profile.picture.url }}"/>
+                    </a>
+                    <p class="post-text">
+                        <a class="text-primary post-link" href="{% url 'profile' profile.pk %}">@{{ profile.user.first_name }}</a>
+                    </p>
+                </div>
+                {% if profile.location %}
+                <p>{{ profile.location }}</p>
+                {% endif %}
+                <p>Followers: {{ profile.followers.all.count }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}

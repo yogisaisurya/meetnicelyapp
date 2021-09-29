@@ -1,0 +1,65 @@
+{% extends 'landing/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-3 col-sm-6">
+                <a href="{% url 'profile' profile.pk %}" class="btn btn-light">Back to the Profile</a>
+            </div>
+        </div>
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-5 col-sm-12">
+                {% if profile.user.first_name %}
+                <h3 class="display-6">Connections for {{ profile.user.first_name }}</h3>
+                {% else %}
+                <h5 class="display-6">Connections for @{{ profile.user.first_name }}</h5>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-5 col-sm-12">
+                <p3>Mutual Connections</p3>
+            </div>
+    </div>
+        {% if not profile.user.first_name %}
+        {% for user_follower in user_followers %}
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-5 col-sm-12 border-bottom position-relative">
+                <div class="position-relative">
+                    <div>
+                        <a href="{% url 'profile' user_follower.pk %}">
+                            <img class="rounded-circle post-img" height="30" width="30" src="{{ user_follower.picture.url }}"/>
+                        </a>
+                        <p class="post-text">
+                            <a class="text-primary post-link" href="{% url 'profile' user_follower.pk %}">@{{ user_follower.name }}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-5 col-sm-12">
+                <h3>Connections</h3>
+            </div>
+        </div>
+        {% for follower in followers %}
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-5 col-sm-12 border-bottom position-relative">
+                <div class="position-relative">
+                    <div>
+                        <a href="{% url 'profile' follower.profile.pk %}">
+                            <img class="rounded-circle post-img" height="30" width="30" src="{{ follower.profile.picture.url }}"/>
+                        </a>
+                        <p class="post-text">
+                            <a class="text-primary post-link" href="{% url 'profile' follower.profile.pk %}">@{{ follower.profile.user.first_name }}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

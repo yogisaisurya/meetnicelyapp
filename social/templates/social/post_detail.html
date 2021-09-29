@@ -1,0 +1,69 @@
+{% extends 'landing/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container bg-dark text-light">
+    <div class="row mt-5">
+        <div class="col-md-3 col-sm-6">
+            <a href="{% url 'post-list' %}" class="btn btn-light">Back to Feed</a>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-5 col-sm-12 border-bottom bg-light text-dark">
+            <div>
+                    <a href="{% url 'profile' post.author.profile.pk %}">
+                        <img class="rounded-circle post-img" height="30" width="30" src="{{ post.author.profile.picture.url }}"/>
+                    </a>
+                    <p class="post-text">
+                        <a class="text-primary post-link" href="{% url 'profile' post.author.profile.pk %}">@{{ post.author.first_name }} </a>{{ post.created_on }}
+                    </p>
+            </div>
+            {% if post.image %}
+                       <img src="{{ post.image.url }}" style="width:100%; height: auto border-radius: 10px; margin-bottom: 10px" />
+            {% endif %}
+            <p>{{ post.body }}</p>
+            <div class="d-flex flex.row">
+                    <form method="POST" action="{% url 'like' post.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button class="remove-default-btn" type="submit">
+                            <i class="far fa-thumbs-up"><span>{{ post.likes.all.count }}</span></i>
+                        </button>
+                    </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-5 col-sm-12">
+            <h5>Add a Comment!</h5>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3 mb-5">
+        <div class="col-md-5 col-sm-12">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form | crispy }}
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success mt-3">Submit!</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% for comment in comments %}
+    <div class="row justify-content-center mt-3 mb-5 border-bottom">
+        <div class="col-md-5 col-sm-12 bg-light text-dark">
+            <div>
+                    <a href="{% url 'profile' comment.author.profile.pk %}">
+                        <img class="rounded-circle post-img" height="30" width="30" src="{{ comment.author.profile.picture.url }}"/>
+                    </a>
+                    <p class="post-text">
+                        <a class="text-primary post-link" href="{% url 'profile' comment.author.profile.pk %}">@{{ comment.author.first_name }} </a>{{ comment.created_on }}
+                    </p>
+                </div>
+            <p>{{ comment.comment }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}

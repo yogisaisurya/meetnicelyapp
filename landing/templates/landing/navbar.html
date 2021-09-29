@@ -1,0 +1,38 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand"
+       {% if user.is_authenticated %}
+         href="{% url 'post-list' %}"
+       {% else %}
+         href="{% url 'index' %}"
+       {% endif %}
+    ><i class="fas fa-comment"></i>Meetnicely</a>
+    {% if user.is_authenticated %}
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="{% url 'profile' request.user.profile.pk %}">Your Profile</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{%url 'account_logout' %}">Signout</a>
+        </li>
+      </ul>
+    </div>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      </ul>
+      <form class="d-flex" method="GET" action="{% url 'profile-search' request.user.profile.pk %}">
+        <div class="input-group">
+          <span class="input-group-text" id="basic-addon1">@</span>
+          <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" name="query" value="{{ request..GET.query}}">
+          <button class="remove-default-btn" type="submit"><i class="fas fa-search"></i></button>
+        </div>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+</nav>

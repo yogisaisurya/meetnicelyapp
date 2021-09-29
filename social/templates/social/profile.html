@@ -1,0 +1,98 @@
+{% extends 'landing/base.html' %}
+
+{% block content %}
+<!-- Background image -->
+
+<!-- Background image -->
+<div class="container bg-dark text-light">
+    <div class="row mt-5">
+        <div class="col-md-3 col-sm-6">
+            <a href="{% url 'post-list' %}" class="btn btn-light">Back to Feed</a>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-5">
+        <div class="card col-md-8 col-sm-12 shadow-sm px-5 pt-3 bg-light text-dark">
+            <div class="text-center">
+                <img src="{{ profile.picture.url }}" class="rounded-circle" width="100" height="100" />
+
+                <h3 class="py-4">{{ profile.user.first_name }}
+                    <span>
+                        {% if request.user == user%}
+                           <a href="{% url 'profile-edit' profile.pk %}" class="edit-color"><i class="far fa-edit"></i>
+                           </a>
+                        {% endif%}
+                    </span>
+                </h3>
+            </div>
+            <div>
+                {% if profile.bio %}
+                <h6>{{ profile.bio }}</h6>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+            <p><a href="{% url 'profile-follow' profile.pk %}" class="text-primary post-link">Connections: {{ number_of_followers}}</a></p>
+        </div>
+        </div>
+
+    </div>
+
+    <div class="row justify-content-center mt-5">
+        <div class="card col-md-8 col-sm-12 shadow-sm px-5 py-3 bg-light text-dark">
+            {% if profile.location %}
+                <h4> Location: {{ profile.location }}</h4>
+            {% endif %}
+            {% if profile.birth_date %}
+                <h5> Birth date: {{ profile.birth_date }}</h5>
+            {% endif %}
+
+            {% if user == request.user %}
+                {% else %}
+                {% if is_following %}
+
+                <form method="POST" action="{% url 'remove-follower' profile.pk %}">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-danger" type=submit>Disconnect</button>
+                </form>
+                {% else %}
+                <form method="POST" action="{% url 'add-follower' profile.pk %}">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-success" type=submit>Connect</button>
+                </form>
+                {% endif %}
+                {% endif %}
+        </div>
+    </div>
+
+    {% for post in posts %}
+    <div class="row justify-content-center mt-5 ">
+        <div class="col-md-8 col-sm-12 border-bottom position-relative bg-light text-dark">
+            <div>
+                    <a href="{% url 'profile' post.author.profile.pk %}">
+                        <img class="rounded-circle post-img" height="30" width="30" src="{{ post.author.profile.picture.url }}"/>
+                    </a>
+                    <p class="post-text">
+                        <a class="text-primary post-link" href="{% url 'profile' post.author.profile.pk %}">@{{ post.author.first_name }} </a>{{ post.created_on }}
+                    </p>
+            </div>
+            <div class="position-relative">
+                {% if post.image %}
+                       <img src="{{ post.image.url }}" style="width:100%; height: auto border-radius: 10px; margin-bottom: 10px" />
+                {% endif %}
+            <p>{{ post.body }}</p>
+            <a class="stretched-link" href="{% url 'post-detail' post.pk %}"></a>
+            </div>
+            <div class="d-flex flex.row">
+                    <form method="POST" action="{% url 'like' post.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button class="remove-default-btn" type="submit">
+                            <i class="far fa-thumbs-up"><span>{{ post.likes.all.count }}</span></i>
+                        </button>
+                    </form>
+                </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock content %}
